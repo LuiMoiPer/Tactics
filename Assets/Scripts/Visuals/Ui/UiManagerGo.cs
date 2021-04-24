@@ -84,7 +84,7 @@ public class UiManagerGo : MonoBehaviour {
             && hit.transform != null
             && (bool) (unitGo = hit.transform.GetComponent<UnitGo>())
         ) {
-            gameManager.Select(unitGo.GetUnit());
+            gameManager.Select(unitGo.unit);
         }
     }
 }
