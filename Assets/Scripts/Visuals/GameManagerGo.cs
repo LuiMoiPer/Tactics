@@ -1,4 +1,5 @@
 using Priority_Queue;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
@@ -6,91 +7,47 @@ using UnityEngine;
 /// actions to unit.
 /// </summary>
 public class GameManagerGo : MonoBehaviour {
-    private SimplePriorityQueue<Unit> unitsByCooldown = new SimplePriorityQueue<Unit>();
-    private Unit selectedUnit = null;
-    private GameObject selectionPrefab;
-    private GameObject selectionVisual;
-    private UiManagerGo uiManager;
-    private Grid grid;
     private GameManager gameManager;
 
-    RaycastHit hit;
-    Ray ray;
+    private GameObject unitPrefab;
+    private GameObject gridPrefab;
+    private GridGo gridGo;
     void Start() {
-        uiManager = GameObject.Find("UiManager").GetComponent<UiManagerGo>();
-        selectionPrefab = Resources.Load("Prefabs/Selection") as GameObject;
-        selectionVisual = GameObject.Instantiate(
-            selectionPrefab,
-            new Vector3(0, 0, 0),
-            Quaternion.identity,
-            gameObject.transform
-        );
-        selectionVisual.SetActive(false);
+        UiManagerGo uiManager = GameObject.Find("UiManager").GetComponent<UiManagerGo>();
+        gameManager = uiManager.gameManager;
+        gameManager.onGridChange += HandleGridChanged;
+        gameManager.onUnitAdded += HandleUnitAdded;
+        // grab prefabs
+        unitPrefab = Resources.Load("Prefabs/Unit") as GameObject;
+        gridPrefab = Resources.Load("Prefabs/Grid") as GameObject;
     }
 
-    void Update() {
-        if (Input.GetMouseButtonDown(0)) {
-            HandleClick();
+    private void HandleUnitAdded(object sender, EventArgs args) {
+        Unit unit = ((UnitAddedEventArgs) args).unit;
+        MakeUnitGo(unit);
+    }
+
+    private void HandleGridChanged(object sender, EventArgs args) {
+        if (gridGo == null) {
+            MakeGridGo();
         }
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            PlayTurn();
-            Debug.Log("Played");
-        }
-        UpdateSelection();
+        gridGo.grid = gameManager.grid;
     }
 
-    public void AddUnit(Unit unit) {
-        unitsByCooldown.Enqueue(unit, unit.cooldown);
-        Debug.Log(unitsByCooldown.Count);
-        Debug.Log(unitsByCooldown.First.cooldown);
+    private void MakeUnitGo(Unit unit) {
+        UnitGo unitGo = GameObject.Instantiate(
+            unitPrefab,
+            Vector3.zero,
+            Quaternion.identity
+        ).GetComponent<UnitGo>();
+        unitGo.unit = unit;
     }
 
-    private void HandleClick() {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        UnitGo unitGo = null;
-        selectedUnit = null;
-        if (Physics.Raycast(ray, out hit)
-            && hit.transform != null
-            && (bool) (unitGo = hit.transform.GetComponent<UnitGo>())
-        ) {
-            selectedUnit = unitGo.GetUnit();
-            Debug.Log(selectedUnit);
-        }
-    }
-
-    private void UpdateSelection() {
-        if (selectedUnit != null) {
-            selectionVisual.SetActive(true);
-            selectionVisual.transform.position = new Vector3(selectedUnit.position.x, 0f, selectedUnit.position.y);
-            uiManager.Highlight(ValidPositions(selectedUnit.neighboors));
-        }
-        else {
-            selectionVisual.SetActive(false);
-        }
-    }
-
-    public void PlayTurn() {
-        Unit unit = unitsByCooldown.First;
-        unit.IncreaseCooldown(unit.position.y);
-        unitsByCooldown.UpdatePriority(unit, unit.cooldown);
-        selectedUnit = unitsByCooldown.First;
-    }
-
-    public List<Coord> ValidPositions(Coord[] positions) {
-        List<Coord> validPositions = new List<Coord>();
-        foreach (Coord position in positions) {
-            if (grid.isValidPosition(position)) {
-                validPositions.Add(position);
-            }
-        }
-        return validPositions;
-    }
-    
-    public void SetGrid(Grid grid) {
-        this.grid = grid;
-    }
-
-    public Grid GetGrid() {
-        return grid;
+    private void MakeGridGo() {
+        gridGo = GameObject.Instantiate(
+            gridPrefab,
+            Vector3.zero,
+            Quaternion.identity
+        ).GetComponent<GridGo>();
     }
 }
