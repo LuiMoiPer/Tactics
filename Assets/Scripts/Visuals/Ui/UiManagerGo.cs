@@ -6,17 +6,23 @@ using UnityEngine;
 /// Manages all the menus for the game, from start to action selection.
 /// </summary>
 public class UiManagerGo : MonoBehaviour {
-    GameManager gameManager;
+    public GameManager gameManager {
+        get {
+            return _gameManager;
+        }
+    }
     GameObject highlightPrefab;
     private GameObject selectionPrefab;
     private GameObject selectionVisual;
     Transform highlightParent;
     RaycastHit hit;
     Ray ray;
+
+    private GameManager _gameManager;
     void Start() {
         // setup non unity stuff
-        gameManager = new GameManager();
-        gameManager.onSelectedUnitChange += HandleSelectedUnitChange;
+        _gameManager = new GameManager();
+        _gameManager.onSelectedUnitChange += HandleSelectedUnitChange;
         // grab prefabs
         highlightPrefab = Resources.Load("Prefabs/Highlight") as GameObject;
         selectionPrefab = Resources.Load("Prefabs/Selection") as GameObject;
