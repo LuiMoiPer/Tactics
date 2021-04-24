@@ -7,12 +7,15 @@ using System.Collections.Generic;
 /// </summary>
 public class GameManager {
     public event EventHandler onSelectedUnitChange;
+    public event EventHandler onGridChange;
+    public event EventHandler onUnitAdded;
 
     public Grid grid {
         get {
             return _grid;
         }
         set {
+            onGridChange?.Invoke(this, EventArgs.Empty);
             _grid = value;
         }
     }
@@ -35,6 +38,7 @@ public class GameManager {
 
     public void AddUnit(Unit unit) {
         unitsByCooldown.Enqueue(unit, unit.cooldown);
+        onUnitAdded?.Invoke(this, new UnitAddedEventArgs(unit));
     }
 
     public void Select(Unit unit) {
