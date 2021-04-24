@@ -9,4 +9,5 @@ public class SceneRunner : MonoBehaviour {
         UiManagerGo uiManagerGo = GameObject.Find("UiManager").GetComponent<UiManagerGo>();
         gameManager = uiManagerGo.gameManager;
         gameManager.grid = new Grid(8, 8);
+    }
 }
