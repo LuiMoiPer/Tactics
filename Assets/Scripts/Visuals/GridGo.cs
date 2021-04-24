@@ -2,15 +2,25 @@
 using UnityEngine;
 
 public class GridGo : MonoBehaviour {
-    private Grid grid;
-
-    [SerializeField]
-    GameObject tilePrefab;
+    public Grid grid {
+        get {
+            return _grid;
+        }
+        set {
+            setGrid(value);
+        }
+    }
+    
+    private GameObject tilePrefab;
+    
+    private Grid _grid;
 
     public void setGrid(Grid grid) {
         this.grid = grid;
         destroyChildren();
-        makeGridVisual();
+        if (grid != null) {
+            makeGridVisual();
+        }
     }
     private void makeGridVisual() {
         for (int i = 0; i < grid.width; i++) {
