@@ -1,41 +1,35 @@
 using Priority_Queue;
 using System.Collections.Generic;
-using UnityEngine;
 /// <summary>
 /// Takes care of high level game actions such as keeping track of unit turns and sending selected 
 /// actions to unit.
 /// </summary>
-public class GameManager : MonoBehaviour {
-    private SimplePriorityQueue<Unit> unitsByCooldown = new SimplePriorityQueue<Unit>();
-    private Unit selectedUnit = null;
-    private GameObject selectionPrefab;
-    private GameObject selectionVisual;
-    private UiManager uiManager;
-    private Grid grid;
+public class GameManager {
+    public event EventHandler onSelectedUnitChange;
 
-    RaycastHit hit;
-    Ray ray;
-    void Start() {
-        uiManager = GameObject.Find("UiManager").GetComponent<UiManager>();
-        selectionPrefab = Resources.Load("Prefabs/Selection") as GameObject;
-        selectionVisual = GameObject.Instantiate(
-            selectionPrefab,
-            new Vector3(0, 0, 0),
-            Quaternion.identity,
-            gameObject.transform
-        );
-        selectionVisual.SetActive(false);
+    public Grid grid {
+        get {
+            return _grid;
+        }
+        set {
+            _grid = value;
+        }
     }
 
-    void Update() {
-        if (Input.GetMouseButtonDown(0)) {
-            HandleClick();
+    public Unit selectedUnit {
+        get {
+            return _selectedUnit;
         }
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            PlayTurn();
-            Debug.Log("Played");
-        }
-        UpdateSelection();
+    }
+
+    private SimplePriorityQueue<Unit> unitsByCooldown;
+    private Unit _selectedUnit;
+    private Grid _grid;
+
+    public GameManager() {
+        this._grid = null;
+        this._selectedUnit = null;
+        this.unitsByCooldown = new SimplePriorityQueue<Unit>();
     }
 
     public void AddUnit(Unit unit) {
@@ -44,27 +38,10 @@ public class GameManager : MonoBehaviour {
         Debug.Log(unitsByCooldown.First.cooldown);
     }
 
-    private void HandleClick() {
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        UnitGo unitGo = null;
-        selectedUnit = null;
-        if (Physics.Raycast(ray, out hit)
-            && hit.transform != null
-            && (bool) (unitGo = hit.transform.GetComponent<UnitGo>())
-        ) {
-            selectedUnit = unitGo.GetUnit();
-            Debug.Log(selectedUnit);
-        }
-    }
-
-    private void UpdateSelection() {
-        if (selectedUnit != null) {
-            selectionVisual.SetActive(true);
-            selectionVisual.transform.position = new Vector3(selectedUnit.position.x, 0f, selectedUnit.position.y);
-            uiManager.Highlight(ValidPositions(selectedUnit.neighboors));
-        }
-        else {
-            selectionVisual.SetActive(false);
+    private void Select(Unit unit) {
+        if (unit != _selectedUnit) {
+            _selectedUnit = unit;
+            onSelectedUnitChange?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -72,7 +49,7 @@ public class GameManager : MonoBehaviour {
         Unit unit = unitsByCooldown.First;
         unit.IncreaseCooldown(unit.position.y);
         unitsByCooldown.UpdatePriority(unit, unit.cooldown);
-        selectedUnit = unitsByCooldown.First;
+        Select(unitsByCooldown.First);
     }
 
     public List<Coord> ValidPositions(Coord[] positions) {
@@ -83,13 +60,5 @@ public class GameManager : MonoBehaviour {
             }
         }
         return validPositions;
-    }
-    
-    public void SetGrid(Grid grid) {
-        this.grid = grid;
-    }
-
-    public Grid GetGrid() {
-        return grid;
     }
 }
