@@ -6,13 +6,13 @@ public class UnitGo : MonoBehaviour {
             return _unit;
         }
         set {
-            _unit = value;
+            SetUnit(value);
         }
     }
     private Unit _unit;
 
-    public void SetUnit(Unit unit) {
-        this.unit = unit;
+    private void SetUnit(Unit unit) {
+        this._unit = unit;
         Debug.Log("Unit set:" + unit);
         UpdateVisual();
     }
