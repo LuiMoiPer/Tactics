@@ -1,4 +1,5 @@
 using Priority_Queue;
+using System;
 using System.Collections.Generic;
 /// <summary>
 /// Takes care of high level game actions such as keeping track of unit turns and sending selected 
@@ -34,11 +35,9 @@ public class GameManager {
 
     public void AddUnit(Unit unit) {
         unitsByCooldown.Enqueue(unit, unit.cooldown);
-        Debug.Log(unitsByCooldown.Count);
-        Debug.Log(unitsByCooldown.First.cooldown);
     }
 
-    private void Select(Unit unit) {
+    public void Select(Unit unit) {
         if (unit != _selectedUnit) {
             _selectedUnit = unit;
             onSelectedUnitChange?.Invoke(this, EventArgs.Empty);
