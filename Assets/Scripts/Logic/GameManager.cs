@@ -6,8 +6,8 @@ using System.Collections.Generic;
 /// actions to unit.
 /// </summary>
 public class GameManager {
-    public event EventHandler onSelectedUnitChange;
-    public event EventHandler onGridChange;
+    public event EventHandler onSelectedUnitChanged;
+    public event EventHandler onGridChanged;
     public event EventHandler onUnitAdded;
 
     public Grid grid {
@@ -15,7 +15,7 @@ public class GameManager {
             return _grid;
         }
         set {
-            onGridChange?.Invoke(this, EventArgs.Empty);
+            onGridChanged?.Invoke(this, EventArgs.Empty);
             _grid = value;
         }
     }
@@ -44,7 +44,7 @@ public class GameManager {
     public void Select(Unit unit) {
         if (unit != _selectedUnit) {
             _selectedUnit = unit;
-            onSelectedUnitChange?.Invoke(this, EventArgs.Empty);
+            onSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 

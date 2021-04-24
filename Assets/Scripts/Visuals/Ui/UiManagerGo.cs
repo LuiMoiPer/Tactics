@@ -22,7 +22,7 @@ public class UiManagerGo : MonoBehaviour {
     void Start() {
         // setup non unity stuff
         _gameManager = new GameManager();
-        _gameManager.onSelectedUnitChange += HandleSelectedUnitChange;
+        _gameManager.onSelectedUnitChanged += HandleSelectedUnitChange;
         // grab prefabs
         highlightPrefab = Resources.Load("Prefabs/Highlight") as GameObject;
         selectionPrefab = Resources.Load("Prefabs/Selection") as GameObject;

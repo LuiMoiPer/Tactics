@@ -15,7 +15,7 @@ public class GameManagerGo : MonoBehaviour {
     void Start() {
         UiManagerGo uiManager = GameObject.Find("UiManager").GetComponent<UiManagerGo>();
         gameManager = uiManager.gameManager;
-        gameManager.onGridChange += HandleGridChanged;
+        gameManager.onGridChanged += HandleGridChanged;
         gameManager.onUnitAdded += HandleUnitAdded;
         // grab prefabs
         unitPrefab = Resources.Load("Prefabs/Unit") as GameObject;
