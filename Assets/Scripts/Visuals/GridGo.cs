@@ -7,7 +7,7 @@ public class GridGo : MonoBehaviour {
             return _grid;
         }
         set {
-            setGrid(value);
+            SetGrid(value);
         }
     }
     
@@ -15,14 +15,14 @@ public class GridGo : MonoBehaviour {
     
     private Grid _grid;
 
-    public void setGrid(Grid grid) {
+    public void SetGrid(Grid grid) {
         this.grid = grid;
-        destroyChildren();
+        DestroyChildren();
         if (grid != null) {
-            makeGridVisual();
+            MakeGridVisual();
         }
     }
-    private void makeGridVisual() {
+    private void MakeGridVisual() {
         for (int i = 0; i < grid.width; i++) {
             for (int j = 0; j < grid.height; j++) {
                 // make tile
@@ -37,7 +37,7 @@ public class GridGo : MonoBehaviour {
         }
     }
 
-    private void destroyChildren() {
+    private void DestroyChildren() {
         foreach (Transform child in gameObject.transform) {
             DestroyImmediate(child.gameObject);
         }
