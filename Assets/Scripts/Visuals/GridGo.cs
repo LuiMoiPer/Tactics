@@ -15,14 +15,21 @@ public class GridGo : MonoBehaviour {
     
     private Grid _grid;
 
+    void Start () {
+        GetPrefabs();
+    }
+
     public void SetGrid(Grid grid) {
-        this.grid = grid;
+        this._grid = grid;
         DestroyChildren();
         if (grid != null) {
             MakeGridVisual();
         }
     }
     private void MakeGridVisual() {
+        if (tilePrefab == null) {
+            GetPrefabs();
+        }
         for (int i = 0; i < grid.width; i++) {
             for (int j = 0; j < grid.height; j++) {
                 // make tile
@@ -35,6 +42,10 @@ public class GridGo : MonoBehaviour {
                 tile.name = i + ", " + j;
             }
         }
+    }
+
+    private void GetPrefabs() {
+        tilePrefab = Resources.Load("Prefabs/Tile") as GameObject;
     }
 
     private void DestroyChildren() {
