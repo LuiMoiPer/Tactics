@@ -13,18 +13,30 @@ public class GameManagerGo : MonoBehaviour {
     private GameObject gridPrefab;
     private GridGo gridGo;
     void Start() {
+        GetPrefabs();
         UiManagerGo uiManager = GameObject.Find("UiManager").GetComponent<UiManagerGo>();
-        gameManager = uiManager.gameManager;
-        gameManager.onGridChanged += HandleGridChanged;
-        gameManager.onUnitAdded += HandleUnitAdded;
-        // grab prefabs
-        unitPrefab = Resources.Load("Prefabs/Unit") as GameObject;
-        gridPrefab = Resources.Load("Prefabs/Grid") as GameObject;
+        uiManager.onGameManagerChanged += HandleGameManagerChanged;
+        // fire event handlers if gm is not null
+        if (uiManager.gameManager != null) {
+            HandleGameManagerChanged(uiManager, EventArgs.Empty);
+            HandleGridChanged(null, EventArgs.Empty);
+        }
+    }
+
+    private void GetPrefabs() {
+        unitPrefab = Resources.Load<GameObject>("Prefabs/Unit");
+        gridPrefab = Resources.Load<GameObject>("Prefabs/Grid");
     }
 
     private void HandleUnitAdded(object sender, EventArgs args) {
         Unit unit = ((UnitAddedEventArgs) args).unit;
         MakeUnitGo(unit);
+    }
+
+    private void HandleGameManagerChanged(object sender, EventArgs args) {
+        gameManager = ((UiManagerGo) sender).gameManager;
+        gameManager.onGridChanged += HandleGridChanged;
+        gameManager.onUnitAdded += HandleUnitAdded;
     }
 
     private void HandleGridChanged(object sender, EventArgs args) {
