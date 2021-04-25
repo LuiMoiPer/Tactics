@@ -6,6 +6,8 @@ using UnityEngine;
 /// Manages all the menus for the game, from start to action selection.
 /// </summary>
 public class UiManagerGo : MonoBehaviour {
+    public event EventHandler onGameManagerChanged;
+
     public GameManager gameManager {
         get {
             return _gameManager;
@@ -23,6 +25,7 @@ public class UiManagerGo : MonoBehaviour {
         // setup non unity stuff
         _gameManager = new GameManager();
         _gameManager.onSelectedUnitChanged += HandleSelectedUnitChange;
+        onGameManagerChanged?.Invoke(this, EventArgs.Empty);
         // grab prefabs
         highlightPrefab = Resources.Load("Prefabs/Highlight") as GameObject;
         selectionPrefab = Resources.Load("Prefabs/Selection") as GameObject;
