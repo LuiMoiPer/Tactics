@@ -26,9 +26,7 @@ public class UiManagerGo : MonoBehaviour {
         _gameManager = new GameManager();
         _gameManager.onSelectedUnitChanged += HandleSelectedUnitChange;
         onGameManagerChanged?.Invoke(this, EventArgs.Empty);
-        // grab prefabs
-        highlightPrefab = Resources.Load("Prefabs/Highlight") as GameObject;
-        selectionPrefab = Resources.Load("Prefabs/Selection") as GameObject;
+        GetPrefabs();
         // make game objects
         highlightParent = new GameObject("HighlightParent").transform;
         highlightParent.SetParent(gameObject.transform);
@@ -71,6 +69,11 @@ public class UiManagerGo : MonoBehaviour {
         foreach (Transform child in highlightParent) {
             Destroy(child.gameObject);
         }
+    }
+
+    private void GetPrefabs() {
+        highlightPrefab = Resources.Load<GameObject>("Prefabs/Highlight");
+        selectionPrefab = Resources.Load<GameObject>("Prefabs/Selection");
     }
 
     private void HandleSelectedUnitChange(object sender, EventArgs args) {
