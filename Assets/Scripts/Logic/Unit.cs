@@ -1,21 +1,5 @@
 using System.Collections.Generic;
 public class Unit {
-    Coord _position;
-    Coord[] neighborDeltas = new Coord[]{ 
-        new Coord(-1, -1),
-        new Coord(-1, 0),
-        new Coord(-1, 1),
-        new Coord(0, -1),
-        new Coord(0, 1),
-        new Coord(1, -1),
-        new Coord(1, 0),
-        new Coord(1, 1)
-    };
-    Attributes attributes = new Attributes();
-    
-    //List<Coord> neighbors = new List<Coord>();
-    List<Action> actions = new List<Action>();
-
     public int cooldown {
         get {
             return attributes.cooldown;
@@ -32,6 +16,30 @@ public class Unit {
             return CurrentNeighboors();
         }
     }
+
+    public ActionType[] possibleActions {
+        get {
+            return _possibleActions;
+        }
+    }
+
+    private ActionType[] _possibleActions = new ActionType[] {
+        ActionType.Move, 
+        ActionType.Wait
+    };
+    private Coord _position;
+    private Coord[] neighborDeltas = new Coord[] { 
+        new Coord(-1, -1),
+        new Coord(-1, 0),
+        new Coord(-1, 1),
+        new Coord(0, -1),
+        new Coord(0, 1),
+        new Coord(1, -1),
+        new Coord(1, 0),
+        new Coord(1, 1)
+    };
+    
+    private Attributes attributes = new Attributes();
 
     public Unit(Coord position) {
         this._position = position;
