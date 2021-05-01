@@ -3,5 +3,6 @@
 /// a unit.
 /// </summary>
 public enum ActionType {
-    Move
+    Move,
+    Wait
 }
