@@ -105,4 +105,11 @@ public class UiManagerGo : MonoBehaviour {
             gameManager.Select(null);
         }
     }
+
+    private void ShowPossibleUnitActions(Unit unit) {
+    }
+
+    private void HidePossibleUnitActions() {
+
+    }
 }
