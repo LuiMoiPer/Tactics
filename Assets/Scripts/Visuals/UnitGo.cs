@@ -1,23 +1,25 @@
 using UnityEngine;
 
 public class UnitGo : MonoBehaviour {
-    Unit unit;
-    [SerializeField]
-    int cooldown = 0;
+    public Unit unit {
+        get {
+            return _unit;
+        }
+        set {
+            SetUnit(value);
+        }
+    }
+    private Unit _unit;
 
-    public void SetUnit(Unit unit) {
-        this.unit = unit;
+    private void SetUnit(Unit unit) {
+        this._unit = unit;
         Debug.Log("Unit set:" + unit);
         UpdateVisual();
-    }
-
-    public Unit GetUnit() {
-        return unit;
     }
  
     void Update() {
         if (unit != null) {
-            cooldown = unit.cooldown;
+            UpdateVisual();
         }
     }
 
