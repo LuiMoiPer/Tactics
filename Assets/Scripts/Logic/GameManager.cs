@@ -26,6 +26,16 @@ public class GameManager {
         }
     }
 
+    public List<Unit> units {
+        get {
+            List<Unit> _units = new List<Unit>();
+            foreach (Unit unit in unitsByCooldown) {
+                _units.Add(unit);
+            }
+            return _units;
+        }
+    }
+
     private SimplePriorityQueue<Unit> unitsByCooldown;
     private Unit _selectedUnit;
     private Grid _grid;
