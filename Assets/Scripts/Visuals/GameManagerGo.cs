@@ -12,7 +12,10 @@ public class GameManagerGo : MonoBehaviour {
     private GameObject unitPrefab;
     private GameObject gridPrefab;
     private GridGo gridGo;
+    Transform unitParent;
     void Start() {
+        unitParent = new GameObject("UnitParent").transform;
+        unitParent.SetParent(gameObject.transform);
         GetPrefabs();
         UiManagerGo uiManager = GameObject.Find("UiManager").GetComponent<UiManagerGo>();
         uiManager.onGameManagerChanged += HandleGameManagerChanged;
@@ -37,6 +40,10 @@ public class GameManagerGo : MonoBehaviour {
         gameManager = ((UiManagerGo) sender).gameManager;
         gameManager.onGridChanged += HandleGridChanged;
         gameManager.onUnitAdded += HandleUnitAdded;
+        ClearUnitGos();
+        foreach (Unit unit in gameManager.units) {
+            MakeUnitGo(unit);
+        }
     }
 
     private void HandleGridChanged(object sender, EventArgs args) {
@@ -50,9 +57,16 @@ public class GameManagerGo : MonoBehaviour {
         UnitGo unitGo = GameObject.Instantiate(
             unitPrefab,
             Vector3.zero,
-            Quaternion.identity
+            Quaternion.identity,
+            unitParent
         ).GetComponent<UnitGo>();
         unitGo.unit = unit;
+    }
+
+    private void ClearUnitGos() {
+        foreach (Transform child in unitParent) {
+            Destroy(child.gameObject);
+        }
     }
 
     private void MakeGridGo() {
