@@ -80,6 +80,15 @@ public class UiManagerGo : MonoBehaviour {
         ClearHighlight();
         if (gameManager.selectedUnit != null) {
             Highlight(gameManager.ValidPositions(gameManager.selectedUnit.neighboors));
+            selectionVisual.SetActive(true);
+            selectionVisual.transform.position = new Vector3(
+                gameManager.selectedUnit.position.x,
+                0f,
+                gameManager.selectedUnit.position.y
+            );
+        }
+        else {
+            selectionVisual.SetActive(false);
         }
     }
 
@@ -91,6 +100,9 @@ public class UiManagerGo : MonoBehaviour {
             && (bool) (unitGo = hit.transform.GetComponent<UnitGo>())
         ) {
             gameManager.Select(unitGo.unit);
+        }
+        else {
+            gameManager.Select(null);
         }
     }
 }
