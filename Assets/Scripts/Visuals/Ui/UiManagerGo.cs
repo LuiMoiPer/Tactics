@@ -13,21 +13,27 @@ public class UiManagerGo : MonoBehaviour {
             return _gameManager;
         }
     }
-    GameObject highlightPrefab;
+
+    private ActionListGo actionList;
+    private GameObject highlightPrefab;
     private GameObject selectionPrefab;
     private GameObject selectionVisual;
-    Transform highlightParent;
-    RaycastHit hit;
-    Ray ray;
-
+    private GameObject canvasGo;
+    private Transform highlightParent;
+    private RaycastHit hit;
+    private Ray ray;
     private GameManager _gameManager;
     void Start() {
-        // setup non unity stuff
-        _gameManager = new GameManager();
-        _gameManager.onSelectedUnitChanged += HandleSelectedUnitChange;
-        onGameManagerChanged?.Invoke(this, EventArgs.Empty);
         GetPrefabs();
+        canvasGo = transform.Find("Canvas").gameObject;
         // make game objects
+        actionList = GameObject.Instantiate(
+            Resources.Load<GameObject>("Prefabs/ActionList"),
+            new Vector3(0, 0, 0),
+            Quaternion.identity,
+            canvasGo.transform
+        ).GetComponent<ActionListGo>();
+
         highlightParent = new GameObject("HighlightParent").transform;
         highlightParent.SetParent(gameObject.transform);
 
@@ -38,6 +44,11 @@ public class UiManagerGo : MonoBehaviour {
             gameObject.transform
         );
         selectionVisual.SetActive(false);
+
+        // setup non unity stuff
+        _gameManager = new GameManager();
+        _gameManager.onSelectedUnitChanged += HandleSelectedUnitChange;
+        onGameManagerChanged?.Invoke(this, EventArgs.Empty);
     }
 
     void Update() {
@@ -78,17 +89,19 @@ public class UiManagerGo : MonoBehaviour {
 
     private void HandleSelectedUnitChange(object sender, EventArgs args) {
         ClearHighlight();
-        if (gameManager.selectedUnit != null) {
-            Highlight(gameManager.ValidPositions(gameManager.selectedUnit.neighboors));
+        Unit selectedUnit = gameManager.selectedUnit;
+        if (selectedUnit != null) {
             selectionVisual.SetActive(true);
             selectionVisual.transform.position = new Vector3(
-                gameManager.selectedUnit.position.x,
+                selectedUnit.position.x,
                 0f,
-                gameManager.selectedUnit.position.y
+                selectedUnit.position.y
             );
+            actionList.ShowActions(selectedUnit.possibleActions);
         }
         else {
             selectionVisual.SetActive(false);
+            actionList.ClearActions();
         }
     }
 
